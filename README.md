@@ -1,4 +1,4 @@
-# MERN Stack Chatbot Application
+# MERN Stack Analyser Application
 
 ## Overview
 This project is a Analyser Application built using the MERN stack (MongoDB, Express, React, Node.js). It is designed to simulate a conversational, providing interactive, real-time responses to user queries and many more. Since I have tried my best to implement pdf reader technology but due to time constrain I am not able to implement it yet but if I got some more time to complete this project then I will make sure to do that part too...
@@ -82,16 +82,18 @@ Open your browser and navigate to `http://localhost:5000`.
 
 ## Project Structure
 ```
-mern-chatbot-app/
+mern-Analyser-app/
 ├── Backend/
-│   ├── config/
-│   ├── controllers/
+│   ├── controller/
+│   ├── database/
 │   ├── middleware/
 │   ├── models/
 │   ├── routes/
 │   └── index.js
 ├── Frontend/
 │   ├── src/
+│   ├── components/
+│   ├── assets/
 │   ├── public/
 │   └── package.json
 └── README.md
@@ -103,9 +105,9 @@ mern-chatbot-app/
 ### Using Render (Free Hosting)
 1. Deploy the backend:
    The project can be accessed using http://localhost:5000.
-   Using render I am deploying the website. This website is live but its only showing blank page. I have seen the error and trying my best to resolve that.
-   https://technical-assessment-6-i0hk.onrender.com/ 
-   (PROJECT LIVE LINK BUT ITS NOT SHOWING ANYTHING).
+   https://technical-assessment-6-i0hk.onrender.com/
+   (PROJECT LIVE LINK).
+   This project is deployed on Render website so it will take more time then usual to send the otp to the entered mail id.
 
 ---
 
