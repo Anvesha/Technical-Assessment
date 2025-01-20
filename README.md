@@ -3,7 +3,9 @@
 ## Overview
 This project is a Analyser Application built using the MERN stack (MongoDB, Express, React, Node.js). It is designed to simulate a conversational, providing interactive, real-time responses to user queries and many more. Since I have tried my best to implement pdf reader technology but due to time constrain I am not able to implement it yet but if I got some more time to complete this project then I will make sure to do that part too...
 
-Other than that we can take the text of the pdf and analyser will analyse the text and give out the useful result;
+Other than that we can copy the text of the pdf and paste that to the conversation and this ask analyser to analyse that whether it is suitable for our social media handler. By the time I will add some more functionality inside the same. In case of pictures, you can give a scenerio to the analyser like.
+
+Eg:- If there is a picture of cat then i will say it like "make a story on a cat where the cat is sitting down the table".
 
 ---
 
@@ -31,20 +33,7 @@ Before you begin, ensure you have the following installed on your machine:
 git clone https://github.com/Anvesha/Technical-Assessment
 ```
 
-### 2. Install Dependencies
-#### Backend
-```bash
-cd Backend
-npm install
-```
-
-#### Frontend
-```bash
-cd ../Frontend
-npm install
-```
-
-### 3. Configure Environment Variables
+### 2. Configure Environment Variables
 Create a `.env` file in the `Backend` directory and add the following:
 ```
 PORT = 5000
@@ -60,25 +49,7 @@ ACTIVATION_SECRET=ahsjkxhukashxusxh
 jwt_sec=hgjhgjhgjhghjghjggj
 ```
 
----
-
-## Usage
-### 1. Start the Backend Server
-```bash
-cd Backend
-npm start
-```
-
-### 2. Start the Frontend
-```bash
-cd Frontend
-npm start
-```
-
-### 3. Access the Application
-Open your browser and navigate to `http://localhost:5000`.
-
----
+---> RUN THE COMMAND "npm run dev" in your cmd and your project will get live and you can see that on http://localhost:5000
 
 ## Project Structure
 ```
@@ -107,7 +78,7 @@ mern-Analyser-app/
    The project can be accessed using http://localhost:5000.
    https://technical-assessment-6-i0hk.onrender.com/
    (PROJECT LIVE LINK).
-   This project is deployed on Render website so it will take more time then usual to send the otp to the entered mail id.
+   This project is deployed on free Render version, so it will take bit more time then usual to send the otp to the entered mail id. You can simply clone the project, add basic .env file and run the project using npm run dev and your project is READY:)
 
 ---
 
