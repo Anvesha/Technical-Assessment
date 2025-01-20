@@ -102,7 +102,10 @@ mern-chatbot-app/
 ## Deployment
 ### Using Render (Free Hosting)
 1. Deploy the backend:
-   The project can be accessed using http://localhost:5000
+   The project can be accessed using http://localhost:5000.
+   Using render I am deploying the website. This website is live but its only showing blank page. I have seen the error and trying my best to resolve that.
+   https://technical-assessment-6-i0hk.onrender.com/ 
+   (PROJECT LIVE LINK BUT ITS NOT SHOWING ANYTHING).
 
 ---
 

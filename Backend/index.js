@@ -26,7 +26,7 @@ app.use(cors());
 app.use('/api/user', userRouter);
 app.use('/api/chat', chatRoutes);
 
-app.use(express.static(path.join(_dirname, "frontend", "dist")));
+app.use(express.static(path.join(_dirname, "Frontend", "dist")));
 app.get('*',(req,res)=>{
     res.sendFile(path.resolve(_dirname, "Frontend", "dist", "index.html"));
 });
