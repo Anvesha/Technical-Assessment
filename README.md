@@ -74,8 +74,7 @@ mern-Analyser-app/
 
 ## Deployment
 ### Using Render (Free Hosting)
-1. Deploy the backend:
-   The project can be accessed using http://localhost:5000.
+1. Complete Project Live Link:
    https://technical-assessment-6-i0hk.onrender.com/
    (PROJECT LIVE LINK).
    This project is deployed on free Render version, so it will take bit more time then usual to send the otp to the entered mail id. You can simply clone the project, add basic .env file and run the project using npm run dev and your project is READY:)
