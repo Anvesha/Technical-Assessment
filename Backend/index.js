@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./database/db.js";
 import userRouter from "./routes/userRouter.js";
 import chatRoutes from "./routes/chatRoutes.js";
-import errorHandler from "./middleware/errorHandler.js";
+import errorHandler from "./middleware/errorhandler.js";
 import cors from "cors";
 import path from "path"; 
 
