@@ -1,85 +1,105 @@
-import { createContext,useContext, useEffect, useState } from "react";
-import toast, {Toaster} from "react-hot-toast"
+import { createContext, useContext, useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import {server} from "../main";
+import { server } from "../main";
 
 const UserContext = createContext();
 
-export const UserProvider = ({children}) =>{
-    const [btnLoading,setbtnLoading] = useState(false);
+export const UserProvider = ({ children }) => {
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAuth, setIsAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
 
+  // 🔐 Login with email
+  const loginUser = async (email, navigate) => {
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(`${server}/api/user/login`, { email });
+      toast.success(data.message);
+      localStorage.setItem("verifyToken", data.verifyToken);
+      navigate("/verify");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Login failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  };
 
-    async function loginUser(email,navigate){
-        setbtnLoading(true);
-        try{
-            const {data} = await axios.post(`${server}/api/user/login`,{email});
+  // ✅ Verify OTP and get token
+  const verifyUser = async (otp, navigate) => {
+    const verifyToken = localStorage.getItem("verifyToken");
+    if (!verifyToken) return toast.error("Missing verification token");
 
-            toast.success(data.message);
-            localStorage.setItem("verifyToken", data.verifyToken);
-            navigate("/verify");
-            setbtnLoading(false);
-        }catch(error){
-            toast.error(error.response.data.message);
-            setbtnLoading(false);
-        }
+    setBtnLoading(true);
+    try {
+      const { data } = await axios.post(`${server}/api/user/verify`, { otp, verifyToken });
+      toast.success(data.message);
+      localStorage.clear();
+      localStorage.setItem("token", data.token);
+      setUser(data.user);
+      setIsAuth(true);
+      navigate("/");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Verification failed");
+    } finally {
+      setBtnLoading(false);
+    }
+  };
+
+  // 👤 Fetch current user if token exists
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLoading(false);
+      return;
     }
 
-
-    const [user,setUser] = useState([]);
-    const [isAuth,setIsAuth] = useState(false);
-
-    async function verifyUser(otp,navigate){
-        const verifyToken = localStorage.getItem("verifyToken");
-        setbtnLoading(true);
-
-        if(!verifyToken) return toast.error("Please enter 6 digit OTP");
-        try{
-            const {data} = await axios.post(`${server}/api/user/verify`,{otp, verifyToken});
-
-            toast.success(data.message);
-            localStorage.clear();
-            localStorage.setItem("token", data.token);
-            navigate("/");
-            setbtnLoading(false);
-            setIsAuth(true);
-            setUser(data.user);
-        }catch(error){
-            toast.error(error.response.data.message);
-            setbtnLoading(false);
-        }
+    try {
+      const { data } = await axios.get(`${server}/api/user/me`, {
+        headers: { token },
+      });
+      setUser(data);
+      setIsAuth(true);
+    } catch (error) {
+      console.error("Fetch user failed:", error);
+      setIsAuth(false);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const [loading,setLoading] = useState(true);
-    async function fetchUser(){
-        try{
-            const {data} = await axios(`${server}/api/user/me`,{
-                headers: {
-                    token: localStorage.getItem("token")
-                },
-            });
+  // 🚪 Logout and redirect
+  const logoutUser = (navigate) => {
+    localStorage.clear();
+    setIsAuth(false);
+    setUser(null);
+    toast.success("Logged out successfully");
+    if (navigate) navigate("/login");
+  };
 
-            setIsAuth(true);
-            setUser(data);
-            setLoading(false);
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
-        }catch(error){
-            console.log(error);
-            setIsAuth(false);
-            setLoading(false);
-        }
-
-    }
-    useEffect(()=>{
-        fetchUser();
-    },[]);
-
-
-    return(
-    <UserContext.Provider value = {{loginUser, btnLoading, isAuth, setIsAuth, user, verifyUser, loading}}>
-        {children}
-        <Toaster/>
+  return (
+    <UserContext.Provider
+      value={{
+        loginUser,
+        btnLoading,
+        isAuth,
+        setIsAuth,
+        user,
+        verifyUser,
+        loading,
+        logoutUser,
+      }}
+    >
+      {children}
+      <Toaster />
     </UserContext.Provider>
-    );
+  );
 };
 
-    export const UserData = ()=>useContext(UserContext);
+// Custom hook for context access
+export const UserData = () => useContext(UserContext);

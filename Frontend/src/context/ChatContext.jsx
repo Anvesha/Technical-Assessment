@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { server } from "../main";
@@ -10,6 +9,10 @@ export const ChatProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [newRequestLoading, setNewRequestLoading] = useState(false);
+  const [chats, setChats] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [createLod, setCreateLod] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function fetchResponse() {
     if (prompt === "") return alert("Write prompt");
@@ -17,7 +20,7 @@ export const ChatProvider = ({ children }) => {
     setPrompt("");
     try {
       const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyB6g1hCVjbuqt_MwSi0e5CS0vAh-Za1n40",
+        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=YOUR_API_KEY",
         method: "post",
         data: {
           contents: [{ parts: [{ text: prompt }] }],
@@ -26,19 +29,17 @@ export const ChatProvider = ({ children }) => {
 
       const message = {
         question: prompt,
-        answer:
-          response["data"]["candidates"][0]["content"]["parts"][0]["text"],
+        answer: response.data.candidates[0].content.parts[0].text,
       };
 
       setMessages((prev) => [...prev, message]);
       setNewRequestLoading(false);
 
-      const { data } = await axios.post(
+      await axios.post(
         `${server}/api/chat/${selected}`,
         {
           question: prompt,
-          answer:
-            response["data"]["candidates"][0]["content"]["parts"][0]["text"],
+          answer: message.answer,
         },
         {
           headers: {
@@ -47,15 +48,11 @@ export const ChatProvider = ({ children }) => {
         }
       );
     } catch (error) {
-      alert("someting went wrong");
+      alert("Something went wrong");
       console.log(error);
       setNewRequestLoading(false);
     }
   }
-
-  const [chats, setChats] = useState([]);
-
-  const [selected, setSelected] = useState(null);
 
   async function fetchChats() {
     try {
@@ -64,20 +61,17 @@ export const ChatProvider = ({ children }) => {
           token: localStorage.getItem("token"),
         },
       });
-
       setChats(data);
-      setSelected(data[0]._id);
+      if (data.length > 0) setSelected(data[0]._id);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const [createLod, setCreateLod] = useState(false);
-
   async function createChat() {
     setCreateLod(true);
     try {
-      const { data } = await axios.post(
+      await axios.post(
         `${server}/api/chat/new`,
         {},
         {
@@ -86,18 +80,16 @@ export const ChatProvider = ({ children }) => {
           },
         }
       );
-
       fetchChats();
       setCreateLod(false);
     } catch (error) {
-      toast.error("some went wrong");
+      toast.error("Something went wrong");
       setCreateLod(false);
     }
   }
 
-  const [loading, setLoading] = useState(false);
-
   async function fetchMessages() {
+    if (!selected) return;
     setLoading(true);
     try {
       const { data } = await axios.get(`${server}/api/chat/${selected}`, {
@@ -113,19 +105,29 @@ export const ChatProvider = ({ children }) => {
     }
   }
 
+  // ✅ UPDATED deleteChat FUNCTION
   async function deleteChat(id) {
+    if (!id) {
+      console.error("❌ No chat ID provided to deleteChat");
+      alert("Chat ID is undefined!");
+      return;
+    }
+
     try {
+      console.log("🗑️ Deleting chat with ID:", id);
+
       const { data } = await axios.delete(`${server}/api/chat/${id}`, {
         headers: {
           token: localStorage.getItem("token"),
         },
       });
+
       toast.success(data.message);
       fetchChats();
       window.location.reload();
     } catch (error) {
-      console.log(error);
-      alert("something went wrong");
+      console.log("❌ Error while deleting chat:", error);
+      alert("Something went wrong");
     }
   }
 
@@ -136,6 +138,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     fetchMessages();
   }, [selected]);
+
   return (
     <ChatContext.Provider
       value={{
